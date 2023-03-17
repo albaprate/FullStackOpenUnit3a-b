@@ -2,6 +2,10 @@ const { response } = require("express");
 const express = require("express");
 const app = express();
 app.use(express.json());
+const morgan = require("morgan");
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :body")
+);
 let persons = [
   {
     id: 1,
@@ -53,6 +57,7 @@ app.delete("/api/persons/:id", (request, response) => {
   response.status(204).end();
 });
 
+morgan.token("body", (req) => JSON.stringify(req.body));
 app.post("/api/persons", (request, response) => {
   const body = request.body;
   const nameExists = persons.find((p) => p.name === body.name);
